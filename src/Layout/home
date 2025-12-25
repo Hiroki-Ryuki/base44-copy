@@ -1,0 +1,172 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import { Button } from '@/components/ui/button';
+import { Sparkles, ArrowRight, Star, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-[#1C1C1C] relative overflow-hidden">
+      {/* 和紙テクスチャオーバーレイ */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      {/* ヒーローセクション */}
+      <section className="relative pt-24 pb-20 px-4">
+        <div className="max-w-4xl mx-auto">
+          {/* メインコピー */}
+          <motion.div
+            className="text-center space-y-6 mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="inline-block">
+              <h1 className="text-6xl md:text-7xl font-bold tracking-wide mb-2" style={{ fontFamily: "'Noto Serif JP', serif", color: '#F5F3F0' }}>
+                <ruby>
+                  100円占い
+                  <rt style={{ fontSize: '0.4em', color: '#C2A56F', fontWeight: 'normal' }}>ひゃくえん うらない</rt>
+                </ruby>
+              </h1>
+              <div className="h-1 w-32 mx-auto bg-gradient-to-r from-transparent via-[#C2A56F] to-transparent opacity-60" />
+            </div>
+            
+            <h2 className="text-2xl md:text-3xl font-medium text-[#C2A56F] tracking-wider" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+              世界14統合占術　螺旋暦占
+            </h2>
+            
+            <p className="text-[#F5F3F0]/70 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
+              全世界14占術を統合した最新の占い、螺旋暦占で<br className="hidden md:block" />
+              どんなお悩みでも改善に尽力します。
+            </p>
+
+            {/* CTA */}
+            <motion.div
+              className="pt-8"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+            >
+              <Link to={createPageUrl('Consultation')}>
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-[#0F4C81] to-[#0F4C81]/80 hover:from-[#0F4C81]/90 hover:to-[#0F4C81]/70 text-[#F5F3F0] px-12 py-7 text-xl rounded-lg shadow-2xl hover:shadow-[#C2A56F]/20 transition-all duration-300 border border-[#C2A56F]/30"
+                >
+                  <Sparkles className="w-6 h-6 mr-3" />
+                  30秒で試す
+                  <ArrowRight className="w-6 h-6 ml-3" />
+                </Button>
+              </Link>
+              <p className="text-[#F5F3F0]/40 text-sm mt-4">初回100円で本格鑑定</p>
+            </motion.div>
+          </motion.div>
+
+          {/* 14占術グリッド（抽象的な表現） */}
+          <motion.div
+            className="mt-24"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+          >
+            <div className="text-center mb-12">
+              <h3 className="text-2xl md:text-3xl font-bold text-[#F5F3F0] mb-4" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+                14の占術が織りなす精密な未来予測
+              </h3>
+              <p className="text-[#F5F3F0]/60">
+                東洋・西洋・古代文明の知恵を統合した独自システム
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+              {[
+                { icon: Star, label: '西洋の星' },
+                { icon: Sparkles, label: '東洋の暦' },
+                { icon: Zap, label: '数の神秘' },
+                { icon: Star, label: '古代の知恵' },
+                { icon: Sparkles, label: '運命の柱' },
+                { icon: Zap, label: '生命の樹' },
+                { icon: Star, label: '天空の宿' },
+                { icon: Sparkles, label: '時の周期' },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  className="bg-[#0F4C81]/10 backdrop-blur-sm border border-[#0F4C81]/30 rounded-lg p-6 text-center hover:bg-[#0F4C81]/20 transition-all duration-300"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8 + i * 0.05 }}
+                  whileHover={{ scale: 1.05, borderColor: 'rgba(194, 165, 111, 0.5)' }}
+                >
+                  <item.icon className="w-8 h-8 text-[#C2A56F] mx-auto mb-3" strokeWidth={1.5} />
+                  <p className="text-[#F5F3F0]/80 text-sm font-medium">{item.label}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="text-center mt-8">
+              <p className="text-[#F5F3F0]/40 text-sm">
+                ...その他6つの占術を組み合わせた総合判断
+              </p>
+            </div>
+          </motion.div>
+
+          {/* 価値訴求 */}
+          <motion.div
+            className="mt-24 grid md:grid-cols-3 gap-8"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.8 }}
+          >
+            {[
+              {
+                title: '100円で本格鑑定',
+                desc: '1回わずか100円で14占術統合の本格的な鑑定が受けられます',
+              },
+              {
+                title: '30秒で即答',
+                desc: '生年月日とお悩みを入力するだけ。すぐに鑑定結果をお届けします',
+              },
+              {
+                title: '追加質問も可能',
+                desc: '結果を見た後、さらに2回まで追加で質問できます',
+              },
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                className="text-center p-6 rounded-lg bg-gradient-to-b from-[#0F4C81]/5 to-transparent border border-[#0F4C81]/20"
+                whileHover={{ borderColor: 'rgba(194, 165, 111, 0.3)', scale: 1.02 }}
+              >
+                <h4 className="text-[#C2A56F] font-bold text-lg mb-3" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+                  {feature.title}
+                </h4>
+                <p className="text-[#F5F3F0]/60 text-sm leading-relaxed">
+                  {feature.desc}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* 下部CTA */}
+          <motion.div
+            className="mt-20 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2 }}
+          >
+            <Link to={createPageUrl('Consultation')}>
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-[#C2A56F] to-[#C2A56F]/80 hover:from-[#C2A56F]/90 hover:to-[#C2A56F]/70 text-[#1C1C1C] px-12 py-7 text-xl rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 font-bold"
+              >
+                今すぐ占いを始める
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+    </div>
+  );
+}
