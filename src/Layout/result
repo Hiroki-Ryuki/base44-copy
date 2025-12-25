@@ -1,0 +1,101 @@
+import React from 'react';
+import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import BackgroundEffect from '../components/BackgroundEffect';
+import FortuneCard from '../components/FortuneCard';
+import ShareButton from '../components/ShareButton';
+import { createPageUrl } from '../utils';
+
+export default function Result() {
+  const navigate = useNavigate();
+  const urlParams = new URLSearchParams(window.location.search);
+  const fortuneId = urlParams.get('id');
+
+  const { data: fortune, isLoading } = useQuery({
+    queryKey: ['fortune', fortuneId],
+    queryFn: async () => {
+      const fortunes = await base44.entities.Fortune.filter({ id: fortuneId });
+      return fortunes[0];
+    },
+    enabled: !!fortuneId,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950 flex items-center justify-center">
+        <BackgroundEffect />
+        <div className="relative z-10 text-center space-y-4">
+          <Loader2 className="w-16 h-16 text-golden animate-spin mx-auto" />
+          <p className="text-white/60 text-lg">運命を読み解いています...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!fortune) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950 flex items-center justify-center">
+        <BackgroundEffect />
+        <div className="relative z-10 text-center space-y-4">
+          <p className="text-white/60 text-lg">占い結果が見つかりません</p>
+          <Button
+            onClick={() => navigate(createPageUrl('Home'))}
+            className="bg-golden hover:bg-yellow-600 text-slate-900"
+          >
+            ホームに戻る
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950 relative overflow-hidden">
+      <BackgroundEffect />
+      
+      <div className="relative z-10 container mx-auto px-4 py-12 max-w-3xl">
+        {/* 戻るボタン */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
+          <Button
+            variant="ghost"
+            onClick={() => navigate(createPageUrl('Home'))}
+            className="text-white/60 hover:text-white hover:bg-white/10"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            もう一度占う
+          </Button>
+        </motion.div>
+
+        {/* 占い結果カード */}
+        <div className="space-y-6">
+          <FortuneCard fortune={fortune} />
+          
+          {/* シェアボタン */}
+          <ShareButton fortune={fortune} />
+        </div>
+
+        {/* 装飾 */}
+        <motion.div
+          className="mt-16 text-center space-y-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+        >
+          <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-golden/30 to-transparent" />
+          <p className="text-white/30 text-sm">
+            あなたの未来が輝きますように
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
