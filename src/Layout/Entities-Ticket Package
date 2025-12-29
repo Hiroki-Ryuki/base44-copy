@@ -1,0 +1,35 @@
+{
+  "name": "TicketPackage",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Package name"
+    },
+    "ticket_count": {
+      "type": "number",
+      "description": "Number of tickets in package"
+    },
+    "price": {
+      "type": "number",
+      "description": "Price in yen"
+    },
+    "original_price": {
+      "type": "number",
+      "description": "Original price before discount"
+    },
+    "is_popular": {
+      "type": "boolean",
+      "default": false
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "ticket_count",
+    "price"
+  ]
+}
