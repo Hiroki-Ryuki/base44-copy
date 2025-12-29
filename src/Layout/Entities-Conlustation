@@ -1,0 +1,47 @@
+{
+  "name": "Consultation",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Reference to the user"
+    },
+    "topic": {
+      "type": "string",
+      "enum": [
+        "love",
+        "career",
+        "health",
+        "money",
+        "relationships",
+        "general"
+      ],
+      "description": "Consultation topic"
+    },
+    "concern": {
+      "type": "string",
+      "description": "User's specific concern or question"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed"
+      ],
+      "default": "active"
+    },
+    "follow_up_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of follow-up questions used (max 2)"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Brief summary of the consultation"
+    }
+  },
+  "required": [
+    "user_id",
+    "topic"
+  ]
+}
