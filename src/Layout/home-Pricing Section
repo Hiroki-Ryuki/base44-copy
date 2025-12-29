@@ -1,0 +1,124 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Check, Sparkles, CreditCard, Smartphone } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+
+const packages = [
+  {
+    name: 'お試し',
+    tickets: 1,
+    price: 100,
+    originalPrice: null,
+    features: ['1回の鑑定', '追加会話2回まで', '7占術統合鑑定'],
+    popular: false,
+  },
+  {
+    name: 'スタンダード',
+    tickets: 3,
+    price: 280,
+    originalPrice: 300,
+    features: ['3回の鑑定', '追加会話6回分', '7占術統合鑑定', '10%OFF'],
+    popular: true,
+  },
+  {
+    name: 'プレミアム',
+    tickets: 5,
+    price: 450,
+    originalPrice: 500,
+    features: ['5回の鑑定', '追加会話10回分', '7占術統合鑑定', '10%OFF'],
+    popular: false,
+  },
+];
+
+export default function PricingSection() {
+  return (
+    <section className="py-24 bg-gradient-to-b from-slate-950 via-indigo-950/30 to-slate-950">
+      <div className="max-w-6xl mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+            シンプルな料金プラン
+          </h2>
+          <p className="text-white/50 max-w-xl mx-auto mb-8">
+            まとめ買いでお得に。あなたのペースで占いを楽しめます
+          </p>
+          
+          <div className="flex items-center justify-center gap-6 text-white/60">
+            <div className="flex items-center gap-2">
+              <CreditCard className="w-5 h-5" />
+              <span className="text-sm">クレジットカード</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Smartphone className="w-5 h-5" />
+              <span className="text-sm">PayPay</span>
+            </div>
+          </div>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {packages.map((pkg, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className={`relative ${pkg.popular ? 'lg:-mt-4 lg:mb-4' : ''}`}
+            >
+              {pkg.popular && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                  <Badge className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white border-0 px-4">
+                    人気No.1
+                  </Badge>
+                </div>
+              )}
+              <div className={`h-full bg-slate-900/80 backdrop-blur-sm border rounded-2xl p-6 flex flex-col ${
+                pkg.popular ? 'border-violet-500/50 shadow-lg shadow-violet-500/10' : 'border-slate-800'
+              }`}>
+                <div className="mb-6">
+                  <h3 className="text-white font-medium text-lg mb-2">{pkg.name}</h3>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-light text-white">¥{pkg.price.toLocaleString()}</span>
+                    {pkg.originalPrice && (
+                      <span className="text-white/40 line-through text-sm">¥{pkg.originalPrice.toLocaleString()}</span>
+                    )}
+                  </div>
+                  <p className="text-white/50 text-sm mt-1">{pkg.tickets}回分のチケット</p>
+                </div>
+
+                <ul className="space-y-3 mb-6 flex-grow">
+                  {pkg.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2 text-white/70 text-sm">
+                      <Check className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+
+                <Link to={createPageUrl('Purchase') + `?tickets=${pkg.tickets}&price=${pkg.price}`}>
+                  <Button
+                    className={`w-full rounded-full ${
+                      pkg.popular
+                        ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white'
+                        : 'bg-slate-800 hover:bg-slate-700 text-white'
+                    }`}
+                  >
+                    {pkg.popular && <Sparkles className="w-4 h-4 mr-2" />}
+                    購入する
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
