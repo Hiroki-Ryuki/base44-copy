@@ -1,0 +1,74 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Layers, MessageCircle, Sparkles, Shield, Zap, Heart } from 'lucide-react';
+
+const features = [
+  {
+    icon: MessageCircle,
+    title: '対話型セッション',
+    description: 'チャット形式で、気軽に相談。追加会話も2回まで無料',
+    gradient: 'from-amber-500 to-orange-500',
+  },
+  {
+    icon: Zap,
+    title: '瞬時に回答',
+    description: '待ち時間なし。あなたの悩みに即座にお答えします',
+    gradient: 'from-cyan-500 to-blue-500',
+  },
+  {
+    icon: Heart,
+    title: '寄り添う占い師',
+    description: 'あなたの日常の小さな決断から人生の岐路まで、いつでも傍に',
+    gradient: 'from-rose-500 to-red-500',
+  },
+];
+
+export default function FeaturesSection() {
+  return (
+    <section className="py-24 bg-slate-950">
+      <div className="max-w-6xl mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+            なぜ<span className="text-violet-400">100円占い</span>が選ばれるのか
+          </h2>
+          <p className="text-white/50 max-w-2xl mx-auto leading-relaxed">
+            世界中の4000年にわたる人類の占術の叡智とともに、<br className="hidden md:block" />
+            驚きと安心であなたに寄り添い続けます。<br />
+            最良の方向へ導きます。
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {features.map((feature, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="group relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl blur-xl"
+                style={{
+                  backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))`,
+                }}
+              />
+              <div className="relative bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-6 hover:border-slate-700 transition-all duration-300">
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${feature.gradient} flex items-center justify-center mb-4`}>
+                  <feature.icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-white font-medium text-lg mb-2">{feature.title}</h3>
+                <p className="text-white/50 text-sm leading-relaxed">{feature.description}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
