@@ -1,0 +1,53 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Heart, Briefcase, Activity, Coins, Users, Sparkles } from 'lucide-react';
+
+const topics = [
+  { id: 'love', label: '恋愛・結婚', icon: Heart, color: 'from-pink-500 to-rose-500' },
+  { id: 'career', label: '仕事・キャリア', icon: Briefcase, color: 'from-blue-500 to-indigo-500' },
+  { id: 'health', label: '健康', icon: Activity, color: 'from-emerald-500 to-teal-500' },
+  { id: 'money', label: '金運・財運', icon: Coins, color: 'from-amber-500 to-yellow-500' },
+  { id: 'relationships', label: '人間関係', icon: Users, color: 'from-violet-500 to-purple-500' },
+  { id: 'general', label: '総合運', icon: Sparkles, color: 'from-fuchsia-500 to-pink-500' },
+];
+
+export default function TopicSelector({ onSelect, selectedTopic }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-lg mx-auto"
+    >
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-light text-white mb-2">
+          何について相談しますか？
+        </h2>
+        <p className="text-white/50 text-sm">
+          気になるテーマを選んでください
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        {topics.map((topic, index) => (
+          <motion.button
+            key={topic.id}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.05 }}
+            onClick={() => onSelect(topic.id)}
+            className={`relative p-6 rounded-2xl border transition-all duration-300 ${
+              selectedTopic === topic.id
+                ? 'border-violet-500 bg-violet-500/10'
+                : 'border-slate-700 bg-slate-900/50 hover:border-slate-600'
+            }`}
+          >
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${topic.color} flex items-center justify-center mb-3 mx-auto`}>
+              <topic.icon className="w-6 h-6 text-white" />
+            </div>
+            <p className="text-white font-medium text-sm">{topic.label}</p>
+          </motion.button>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
