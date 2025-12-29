@@ -1,0 +1,150 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, Sparkles, Loader2, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import ReactMarkdown from 'react-markdown';
+
+export default function ChatInterface({ 
+  messages, 
+  onSendMessage, 
+  isLoading, 
+  followUpCount,
+  maxFollowUps = 2,
+  isComplete 
+}) {
+  const [input, setInput] = useState('');
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (input.trim() && !isLoading) {
+      onSendMessage(input.trim());
+      setInput('');
+    }
+  };
+
+  const canAskMore = followUpCount < maxFollowUps && !isComplete;
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+        <AnimatePresence initial={false}>
+          {messages.map((message, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div className={`flex gap-3 max-w-[85%] ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  message.role === 'user' 
+                    ? 'bg-slate-700' 
+                    : 'bg-gradient-to-r from-violet-600 to-fuchsia-600'
+                }`}>
+                  {message.role === 'user' ? (
+                    <User className="w-4 h-4 text-white" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 text-white" />
+                  )}
+                </div>
+                <div className={`rounded-2xl px-4 py-3 ${
+                  message.role === 'user'
+                    ? 'bg-violet-600 text-white'
+                    : 'bg-slate-800 text-white/90'
+                }`}>
+                  {message.role === 'user' ? (
+                    <p className="text-sm leading-relaxed">{message.content}</p>
+                  ) : (
+                    <div className="text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
+                      <ReactMarkdown>{message.content}</ReactMarkdown>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex justify-start"
+          >
+            <div className="flex gap-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" />
+              </div>
+              <div className="bg-slate-800 rounded-2xl px-4 py-3">
+                <div className="flex items-center gap-2 text-white/60">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-sm">鑑定中...</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <div className="border-t border-slate-800 p-4">
+        {!isComplete && (
+          <div className="text-center mb-3">
+            <span className="text-white/40 text-xs">
+              追加会話: {followUpCount}/{maxFollowUps}回使用済み
+            </span>
+          </div>
+        )}
+        
+        {canAskMore ? (
+          <form onSubmit={handleSubmit} className="flex gap-3">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="お聞きになりたいことをどうぞ..."
+              disabled={isLoading}
+              className="flex-1 bg-slate-900/50 border-slate-700 text-white text-base placeholder:text-white/30 focus:border-violet-500 rounded-xl h-12"
+            />
+            <Button
+              type="submit"
+              disabled={!input.trim() || isLoading}
+              className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 rounded-xl h-12 px-4"
+            >
+              <Send className="w-5 h-5" />
+            </Button>
+          </form>
+        ) : (
+          <div className="text-center py-6 space-y-4">
+            <p className="text-white/90 text-base font-medium mb-3">
+              もっと聞く
+            </p>
+            <p className="text-white/60 text-sm mb-4">
+              さらに深く鑑定を受けるには<br />
+              追加チケットが必要です
+            </p>
+            <a href="/Purchase?tickets=3&price=280" className="inline-block">
+              <Button className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white rounded-full px-8 py-3 text-base">
+                <Sparkles className="w-5 h-5 mr-2" />
+                チケットを購入する
+              </Button>
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
