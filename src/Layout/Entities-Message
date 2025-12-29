@@ -1,0 +1,31 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "consultation_id": {
+      "type": "string",
+      "description": "Reference to the consultation"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "user",
+        "fortune_teller"
+      ],
+      "description": "Who sent the message"
+    },
+    "content": {
+      "type": "string",
+      "description": "Message content"
+    },
+    "is_follow_up": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "consultation_id",
+    "role",
+    "content"
+  ]
+}
