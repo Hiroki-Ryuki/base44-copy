@@ -1,0 +1,138 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Sparkles, Star } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+
+export default function HeroSection() {
+  return (
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#1C1C1C] via-[#0F4C81]/10 to-[#1C1C1C]">
+      {/* Star map background - subtle */}
+      <div className="absolute inset-0 opacity-[0.02]">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="starmap" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+              <circle cx="20" cy="40" r="0.5" fill="#C2A56F"/>
+              <circle cx="80" cy="100" r="0.5" fill="#C2A56F"/>
+              <circle cx="150" cy="60" r="0.5" fill="#C2A56F"/>
+              <line x1="20" y1="40" x2="80" y2="100" stroke="#0F4C81" strokeWidth="0.3" opacity="0.3"/>
+              <line x1="80" y1="100" x2="150" y2="60" stroke="#0F4C81" strokeWidth="0.3" opacity="0.3"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#starmap)"/>
+        </svg>
+      </div>
+
+      {/* Animated mystical particles */}
+      <div className="absolute inset-0">
+        {[...Array(40)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-0.5 h-0.5 bg-[#C2A56F] rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              opacity: [0.1, 0.6, 0.1],
+              scale: [1, 1.5, 1],
+            }}
+            transition={{
+              duration: 4 + Math.random() * 3,
+              repeat: Infinity,
+              delay: Math.random() * 3,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Subtle glowing orbs with indigo-gold duotone */}
+      <motion.div
+        className="absolute w-[500px] h-[500px] rounded-full bg-gradient-to-r from-[#0F4C81]/15 to-[#C2A56F]/10 blur-3xl"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.15, 0.25, 0.15],
+          x: [-30, 30, -30],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+        }}
+      />
+      <motion.div
+        className="absolute w-80 h-80 rounded-full bg-[#0F4C81]/10 blur-2xl"
+        style={{ right: '10%', top: '15%' }}
+        animate={{
+          scale: [1.1, 0.9, 1.1],
+          opacity: [0.1, 0.2, 0.1],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          delay: 2,
+        }}
+      />
+
+      <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <div className="w-1 h-1 rounded-full bg-[#C2A56F]/40" />
+            <span className="text-[#C2A56F]/70 text-xs tracking-[0.3em] font-light">世界の占いマイスター</span>
+            <div className="w-1 h-1 rounded-full bg-[#C2A56F]/40" />
+          </div>
+
+          <h1 className="text-5xl md:text-7xl text-[#F5F3F0] mb-4 tracking-wider" style={{ fontFamily: "'Noto Serif JP', serif", fontWeight: 500, letterSpacing: '0.1em' }}>
+            <ruby>暦堂<rt style={{ fontSize: '0.4em', color: '#C2A56F', opacity: 0.8 }}>こよみどう</rt></ruby>
+            <ruby className="ml-3">縁<rt style={{ fontSize: '0.4em', color: '#C2A56F', opacity: 0.8 }}>えにし</rt></ruby>
+          </h1>
+
+          <p className="text-[#0F4C81] text-base md:text-xl mb-8 font-light tracking-widest">
+            ― 100円コンシェルジュ ―
+          </p>
+
+          <p className="text-[#F5F3F0]/60 text-sm md:text-base mb-10 font-light leading-relaxed max-w-lg mx-auto">
+            統合占術システムによる本格鑑定<br />
+            <span className="text-[#C2A56F]/50 text-xs tracking-wide">四柱推命・算命学・九星気学・六星占術・五星三心・西洋占星術</span>
+          </p>
+
+          <div className="flex flex-col items-center justify-center gap-6 mb-12">
+            <Link to={createPageUrl('Consultation')}>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="relative px-12 py-4 text-lg font-medium text-[#F5F3F0] bg-[#0F4C81] rounded-sm border border-[#C2A56F]/30 shadow-lg transition-all hover:border-[#C2A56F]/60 hover:shadow-[#C2A56F]/10"
+                style={{ minWidth: '220px' }}
+              >
+                <span className="relative z-10 tracking-wide">30秒で試す</span>
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-[#C2A56F]/0 via-[#C2A56F]/10 to-[#C2A56F]/0"
+                  animate={{
+                    x: ['-100%', '100%'],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'linear',
+                  }}
+                />
+              </motion.button>
+            </Link>
+            <p className="text-[#F5F3F0]/40 text-xs tracking-wide">
+              いつでも気軽に、あなたのこと話してください
+            </p>
+          </div>
+
+
+        </motion.div>
+      </div>
+
+      {/* Bottom gradient */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#1C1C1C] to-transparent" />
+    </section>
+  );
+}
