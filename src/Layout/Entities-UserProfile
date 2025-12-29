@@ -1,0 +1,36 @@
+{
+  "name": "UserProfile",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Reference to the user"
+    },
+    "birth_date": {
+      "type": "string",
+      "format": "date",
+      "description": "User's birth date for divination"
+    },
+    "birth_time": {
+      "type": "string",
+      "description": "Birth time if known (HH:MM format)"
+    },
+    "birth_place": {
+      "type": "string",
+      "description": "Birth location for accurate readings"
+    },
+    "tickets": {
+      "type": "number",
+      "default": 1,
+      "description": "Number of fortune tickets available"
+    },
+    "total_consultations": {
+      "type": "number",
+      "default": 0,
+      "description": "Total number of consultations done"
+    }
+  },
+  "required": [
+    "user_id"
+  ]
+}
