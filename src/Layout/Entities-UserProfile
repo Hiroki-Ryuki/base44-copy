@@ -1,6 +1,9 @@
 {
-  "name": "UserProfile",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UserProfile",
+  "description": "User profile for fortune telling application",
   "type": "object",
+  "additionalProperties": false,
   "properties": {
     "user_id": {
       "type": "string",
@@ -9,10 +12,11 @@
     "birth_date": {
       "type": "string",
       "format": "date",
-      "description": "User's birth date for divination"
+      "description": "User's birth date for divination (YYYY-MM-DD)"
     },
     "birth_time": {
       "type": "string",
+      "pattern": "^([01]\\d|2[0-3]):([0-5]\\d)$",
       "description": "Birth time if known (HH:MM format)"
     },
     "birth_place": {
@@ -20,12 +24,14 @@
       "description": "Birth location for accurate readings"
     },
     "tickets": {
-      "type": "number",
+      "type": "integer",
+      "minimum": 0,
       "default": 1,
       "description": "Number of fortune tickets available"
     },
     "total_consultations": {
-      "type": "number",
+      "type": "integer",
+      "minimum": 0,
       "default": 0,
       "description": "Total number of consultations done"
     }
