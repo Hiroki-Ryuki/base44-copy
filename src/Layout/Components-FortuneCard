@@ -1,18 +1,42 @@
+'use client';
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, Heart, Star } from 'lucide-react';
 
-export default function FortuneCard({ fortune }) {
-  const fortuneColors = {
-    '大吉': 'from-yellow-400 to-orange-500',
-    '吉': 'from-blue-400 to-purple-500',
-    '中吉': 'from-green-400 to-teal-500',
-    '小吉': 'from-indigo-400 to-blue-500',
-    '末吉': 'from-purple-400 to-pink-500',
-    '凶': 'from-gray-400 to-gray-600',
+/**
+ * fortune 型の前提:
+ * {
+ *   fortune_type: '大吉' | '吉' | '中吉' | '小吉' | '末吉' | '凶'
+ *   name: string
+ *   birthdate: string | Date
+ *   result: string
+ *   advice?: string
+ *   lucky_item?: string
+ *   lucky_color?: string
+ * }
+ */
+
+export default function FortuneCard({ fortune }: { fortune: any }) {
+  const fortuneColors: Record<string, string> = {
+    大吉: 'from-yellow-400 to-orange-500',
+    吉: 'from-blue-400 to-purple-500',
+    中吉: 'from-green-400 to-teal-500',
+    小吉: 'from-indigo-400 to-blue-500',
+    末吉: 'from-purple-400 to-pink-500',
+    凶: 'from-gray-400 to-gray-600',
   };
+
+  const gradient =
+    fortuneColors[fortune?.fortune_type] ??
+    'from-slate-500 to-slate-700';
+
+  const birthdate =
+    fortune?.birthdate
+      ? new Date(fortune.birthdate).toLocaleDateString('ja-JP')
+      : '';
 
   return (
     <motion.div
@@ -23,35 +47,45 @@ export default function FortuneCard({ fortune }) {
         ease: [0.22, 1, 0.36, 1],
       }}
     >
-      <Card className="bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl border-2 border-golden/20 shadow-2xl overflow-hidden">
+      <Card className="bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl border-2 border-yellow-400/20 shadow-2xl overflow-hidden">
         {/* グラデーションヘッダー */}
-        <div className={`h-2 bg-gradient-to-r ${fortuneColors[fortune.fortune_type]}`} />
-        
+        <div className={`h-2 bg-gradient-to-r ${gradient}`} />
+
         <CardContent className="p-8 space-y-6">
           {/* 運勢タイプ */}
           <motion.div
             className="text-center"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+            transition={{
+              delay: 0.3,
+              type: 'spring',
+              stiffness: 200,
+            }}
           >
             <div className="inline-block relative">
-              <div className={`absolute inset-0 bg-gradient-to-r ${fortuneColors[fortune.fortune_type]} opacity-20 blur-xl`} />
-              <h2 className="text-6xl font-serif text-golden relative z-10 tracking-wider">
-                {fortune.fortune_type}
+              <div
+                className={`absolute inset-0 bg-gradient-to-r ${gradient} opacity-20 blur-xl`}
+              />
+              <h2 className="text-6xl font-serif text-yellow-400 relative z-10 tracking-wider">
+                {fortune?.fortune_type}
               </h2>
             </div>
           </motion.div>
 
           {/* 名前と日付 */}
           <motion.div
-            className="text-center space-y-2 pb-4 border-b border-golden/20"
+            className="text-center space-y-2 pb-4 border-b border-yellow-400/20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
-            <p className="text-xl text-white/90 font-medium">{fortune.name}さんの運勢</p>
-            <p className="text-sm text-white/50">{new Date(fortune.birthdate).toLocaleDateString('ja-JP')}</p>
+            <p className="text-xl text-white/90 font-medium">
+              {fortune?.name}さんの運勢
+            </p>
+            {birthdate && (
+              <p className="text-sm text-white/50">{birthdate}</p>
+            )}
           </motion.div>
 
           {/* 占い結果 */}
@@ -63,20 +97,24 @@ export default function FortuneCard({ fortune }) {
           >
             <div className="bg-white/5 rounded-lg p-6 backdrop-blur-sm border border-white/10">
               <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-5 h-5 text-golden" />
-                <h3 className="text-lg font-medium text-golden">占い結果</h3>
+                <Sparkles className="w-5 h-5 text-yellow-400" />
+                <h3 className="text-lg font-medium text-yellow-400">
+                  占い結果
+                </h3>
               </div>
               <p className="text-white/80 leading-relaxed whitespace-pre-line">
-                {fortune.result}
+                {fortune?.result}
               </p>
             </div>
 
             {/* アドバイス */}
-            {fortune.advice && (
+            {fortune?.advice && (
               <div className="bg-white/5 rounded-lg p-6 backdrop-blur-sm border border-white/10">
                 <div className="flex items-center gap-2 mb-3">
                   <Heart className="w-5 h-5 text-pink-400" />
-                  <h3 className="text-lg font-medium text-pink-400">アドバイス</h3>
+                  <h3 className="text-lg font-medium text-pink-400">
+                    アドバイス
+                  </h3>
                 </div>
                 <p className="text-white/80 leading-relaxed">
                   {fortune.advice}
@@ -86,15 +124,15 @@ export default function FortuneCard({ fortune }) {
 
             {/* ラッキーアイテム・カラー */}
             <div className="flex flex-wrap gap-4 justify-center pt-4">
-              {fortune.lucky_item && (
-                <Badge className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-white border-purple-400/30 px-4 py-2 text-sm">
-                  <Star className="w-4 h-4 mr-2" />
+              {fortune?.lucky_item && (
+                <Badge className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-white border-purple-400/30 px-4 py-2 text-sm flex items-center gap-2">
+                  <Star className="w-4 h-4" />
                   ラッキーアイテム: {fortune.lucky_item}
                 </Badge>
               )}
-              {fortune.lucky_color && (
-                <Badge className="bg-gradient-to-r from-blue-500/20 to-teal-500/20 text-white border-blue-400/30 px-4 py-2 text-sm">
-                  <Sparkles className="w-4 h-4 mr-2" />
+              {fortune?.lucky_color && (
+                <Badge className="bg-gradient-to-r from-blue-500/20 to-teal-500/20 text-white border-blue-400/30 px-4 py-2 text-sm flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
                   ラッキーカラー: {fortune.lucky_color}
                 </Badge>
               )}
