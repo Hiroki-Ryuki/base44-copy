@@ -1,40 +1,62 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
-import { Star, User, Menu, X, Sparkles, Ticket } from 'lucide-react';
+import {
+  Star,
+  User,
+  Menu,
+  X,
+  Sparkles,
+  Ticket,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Layout({ children, currentPageName }) {
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
+export default function Layout({
+  children,
+  currentPageName,
+}: {
+  children: React.ReactNode;
+  currentPageName: string;
+}) {
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const isHomePage = currentPageName === 'Home';
   const isConsultationPage = currentPageName === 'Consultation';
   const isPurchasePage = currentPageName === 'Purchase';
-  
-  // Don't show header on consultation and purchase pages (they have their own)
+
+  // Consultation / Purchase は独自ヘッダーを使う
   const hideHeader = isConsultationPage || isPurchasePage;
+
+  const loadUser = useCallback(async () => {
+    try {
+      const currentUser = await base44.auth.me();
+      if (!currentUser) return;
+
+      setUser(currentUser);
+
+      const profiles = await base44.entities.UserProfile.filter({
+        user_id: currentUser.email,
+      });
+
+      if (Array.isArray(profiles) && profiles.length > 0) {
+        setProfile(profiles[0]);
+      }
+    } catch {
+      // 未ログイン時は何もしない
+      setUser(null);
+      setProfile(null);
+    }
+  }, []);
 
   useEffect(() => {
     loadUser();
-  }, []);
+  }, [loadUser]);
 
-  const loadUser = async () => {
-    try {
-      const currentUser = await base44.auth.me();
-      setUser(currentUser);
-      
-      const profiles = await base44.entities.UserProfile.filter({ user_id: currentUser.email });
-      if (profiles.length > 0) {
-        setProfile(profiles[0]);
-      }
-    } catch (err) {
-      // Not logged in
-    }
-  };
-
+  // ヘッダー非表示ページ
   if (hideHeader) {
     return (
       <div className="min-h-screen bg-[#1C1C1C]">
@@ -60,20 +82,44 @@ export default function Layout({ children, currentPageName }) {
           pointer-events: none;
         }
       `}</style>
+
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all noise-texture ${
-        isHomePage ? 'bg-transparent' : 'bg-[#1C1C1C]/95 backdrop-blur-lg border-b border-[#0F4C81]/20'
-      }`}>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all noise-texture ${
+          isHomePage
+            ? 'bg-transparent'
+            : 'bg-[#1C1C1C]/95 backdrop-blur-lg border-b border-[#0F4C81]/20'
+        }`}
+      >
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link to={createPageUrl('Home')} className="flex items-center gap-3">
+            <Link
+              to={createPageUrl('Home')}
+              className="flex items-center gap-3"
+            >
               <div className="w-8 h-8 rounded-sm bg-gradient-to-br from-[#0F4C81] to-[#0F4C81]/60 flex items-center justify-center border border-[#C2A56F]/20">
-                <Star className="w-4 h-4 text-[#C2A56F]" strokeWidth={1.5} />
+                <Star
+                  className="w-4 h-4 text-[#C2A56F]"
+                  strokeWidth={1.5}
+                />
               </div>
-              <span className="text-[#F5F3F0] font-medium text-lg tracking-wide" style={{ fontFamily: "'Noto Serif JP', serif" }}>
-                <ruby>暦堂<rt style={{ fontSize: '0.45em', color: '#C2A56F' }}>こよみどう</rt></ruby>
-                <ruby className="ml-1">縁<rt style={{ fontSize: '0.45em', color: '#C2A56F' }}>えにし</rt></ruby>
+              <span
+                className="text-[#F5F3F0] font-medium text-lg tracking-wide"
+                style={{ fontFamily: "'Noto Serif JP', serif" }}
+              >
+                <ruby>
+                  暦堂
+                  <rt style={{ fontSize: '0.45em', color: '#C2A56F' }}>
+                    こよみどう
+                  </rt>
+                </ruby>
+                <ruby className="ml-1">
+                  縁
+                  <rt style={{ fontSize: '0.45em', color: '#C2A56F' }}>
+                    えにし
+                  </rt>
+                </ruby>
               </span>
             </Link>
 
@@ -82,18 +128,33 @@ export default function Layout({ children, currentPageName }) {
               {profile && (
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#0F4C81]/10 border border-[#0F4C81]/30">
                   <Ticket className="w-4 h-4 text-[#C2A56F]" />
-                  <span className="text-[#F5F3F0] text-sm">あと{profile.tickets || 0}枚</span>
+                  <span className="text-[#F5F3F0] text-sm">
+                    あと{profile.tickets ?? 0}枚
+                  </span>
                 </div>
               )}
-              <Link to={createPageUrl('Home')} className="text-[#F5F3F0]/70 hover:text-[#C2A56F] transition-colors text-sm">
+
+              <Link
+                to={createPageUrl('Home')}
+                className="text-[#F5F3F0]/70 hover:text-[#C2A56F] transition-colors text-sm"
+              >
                 ホーム
               </Link>
-              <Link to={createPageUrl('Consultation')} className="text-[#F5F3F0]/70 hover:text-[#C2A56F] transition-colors text-sm">
+
+              <Link
+                to={createPageUrl('Consultation')}
+                className="text-[#F5F3F0]/70 hover:text-[#C2A56F] transition-colors text-sm"
+              >
                 鑑定を始める
               </Link>
+
               {user ? (
                 <Link to={createPageUrl('MyPage')}>
-                  <Button variant="ghost" size="sm" className="text-[#F5F3F0]/70 hover:text-[#F5F3F0] hover:bg-[#0F4C81]/20">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-[#F5F3F0]/70 hover:text-[#F5F3F0] hover:bg-[#0F4C81]/20"
+                  >
                     <User className="w-4 h-4 mr-2" />
                     マイページ
                   </Button>
@@ -112,9 +173,14 @@ export default function Layout({ children, currentPageName }) {
             {/* Mobile Menu Button */}
             <button
               className="md:hidden text-[#F5F3F0] p-2"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => setIsMenuOpen((v) => !v)}
+              aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -130,11 +196,14 @@ export default function Layout({ children, currentPageName }) {
             >
               <div className="px-4 py-6 space-y-4">
                 {profile && (
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-[#0F4C81]/10 border border-[#0F4C81]/30 mb-4">
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-[#0F4C81]/10 border border-[#0F4C81]/30">
                     <Ticket className="w-4 h-4 text-[#C2A56F]" />
-                    <span className="text-[#F5F3F0] text-sm">チケット残数：あと{profile.tickets || 0}枚</span>
+                    <span className="text-[#F5F3F0] text-sm">
+                      チケット残数：あと{profile.tickets ?? 0}枚
+                    </span>
                   </div>
                 )}
+
                 <Link
                   to={createPageUrl('Home')}
                   onClick={() => setIsMenuOpen(false)}
@@ -142,6 +211,7 @@ export default function Layout({ children, currentPageName }) {
                 >
                   ホーム
                 </Link>
+
                 <Link
                   to={createPageUrl('Consultation')}
                   onClick={() => setIsMenuOpen(false)}
@@ -150,6 +220,7 @@ export default function Layout({ children, currentPageName }) {
                   <Sparkles className="w-4 h-4 inline mr-2" />
                   鑑定を始める
                 </Link>
+
                 {user ? (
                   <Link
                     to={createPageUrl('MyPage')}
