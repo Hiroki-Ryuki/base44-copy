@@ -1,22 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function BirthDateForm({ onSubmit, isLoading, initialData }) {
-  const [formData, setFormData] = useState(initialData || {
+  const [formData, setFormData] = useState({
     birth_date: '',
     birth_time: '',
     birth_place: '',
   });
 
+  // ✅ initialData が後から来ても反映
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        birth_date: initialData.birth_date || '',
+        birth_time: initialData.birth_time || '',
+        birth_place: initialData.birth_place || '',
+      });
+    }
+  }, [initialData]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
   };
+
+  const [year = '', month = '', day = ''] = formData.birth_date.split('-');
+  const [hour = '', minute = ''] = formData.birth_time.split(':');
 
   return (
     <motion.div
@@ -34,128 +54,154 @@ export default function BirthDateForm({ onSubmit, isLoading, initialData }) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* 生年月日 */}
         <div className="space-y-2">
           <Label className="text-white/70 flex items-center gap-2 text-base">
             <Calendar className="w-4 h-4" />
             生年月日 <span className="text-violet-400">*</span>
           </Label>
+
           <div className="grid grid-cols-3 gap-3">
-            <Select 
-              value={formData.birth_date?.split('-')[0] || ''}
-              onValueChange={(year) => {
-                const [, month = '01', day = '01'] = formData.birth_date?.split('-') || [];
-                setFormData({ ...formData, birth_date: `${year}-${month}-${day}` });
-              }}
+            <Select
+              value={year}
+              onValueChange={(y) =>
+                setFormData({ ...formData, birth_date: `${y}-${month || '01'}-${day || '01'}` })
+              }
             >
-              <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white focus:border-violet-500 rounded-xl h-12 text-base">
+              <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white rounded-xl h-12">
                 <SelectValue placeholder="年" />
               </SelectTrigger>
               <SelectContent>
-                {Array.from({ length: 100 }, (_, i) => 2024 - i).map(year => (
-                  <SelectItem key={year} value={String(year)}>{year}年</SelectItem>
+                {Array.from({ length: 100 }, (_, i) => 2024 - i).map((y) => (
+                  <SelectItem key={y} value={String(y)}>
+                    {y}年
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            
-            <Select 
-              value={formData.birth_date?.split('-')[1] || ''}
-              onValueChange={(month) => {
-                const [year = '2000', , day = '01'] = formData.birth_date?.split('-') || [];
-                setFormData({ ...formData, birth_date: `${year}-${month}-${day}` });
-              }}
+
+            <Select
+              value={month}
+              onValueChange={(m) =>
+                setFormData({ ...formData, birth_date: `${year || '2000'}-${m}-${day || '01'}` })
+              }
             >
-              <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white focus:border-violet-500 rounded-xl h-12 text-base">
+              <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white rounded-xl h-12">
                 <SelectValue placeholder="月" />
               </SelectTrigger>
               <SelectContent>
-                {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')).map(month => (
-                  <SelectItem key={month} value={month}>{parseInt(month)}月</SelectItem>
+                {Array.from({ length: 12 }, (_, i) =>
+                  String(i + 1).padStart(2, '0')
+                ).map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {parseInt(m)}月
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            
-            <Select 
-              value={formData.birth_date?.split('-')[2] || ''}
-              onValueChange={(day) => {
-                const [year = '2000', month = '01'] = formData.birth_date?.split('-') || [];
-                setFormData({ ...formData, birth_date: `${year}-${month}-${day}` });
-              }}
+
+            <Select
+              value={day}
+              onValueChange={(d) =>
+                setFormData({ ...formData, birth_date: `${year || '2000'}-${month || '01'}-${d}` })
+              }
             >
-              <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white focus:border-violet-500 rounded-xl h-12 text-base">
+              <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white rounded-xl h-12">
                 <SelectValue placeholder="日" />
               </SelectTrigger>
               <SelectContent>
-                {Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0')).map(day => (
-                  <SelectItem key={day} value={day}>{parseInt(day)}日</SelectItem>
+                {Array.from({ length: 31 }, (_, i) =>
+                  String(i + 1).padStart(2, '0')
+                ).map((d) => (
+                  <SelectItem key={d} value={d}>
+                    {parseInt(d)}日
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
         </div>
 
+        {/* 出生時刻 */}
         <div className="space-y-2">
           <Label className="text-white/70 flex items-center gap-2 text-base">
             <Clock className="w-4 h-4" />
             出生時刻（わかれば）
           </Label>
+
           <div className="grid grid-cols-2 gap-3">
-            <Select 
-              value={formData.birth_time?.split(':')[0] || ''}
-              onValueChange={(hour) => {
-                const [, minute = '00'] = formData.birth_time?.split(':') || [];
-                setFormData({ ...formData, birth_time: `${hour}:${minute}` });
-              }}
+            <Select
+              value={hour}
+              onValueChange={(h) =>
+                setFormData({
+                  ...formData,
+                  birth_time: `${h}:${minute || '00'}`,
+                })
+              }
             >
-              <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white focus:border-violet-500 rounded-xl h-12 text-base">
+              <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white rounded-xl h-12">
                 <SelectValue placeholder="時" />
               </SelectTrigger>
               <SelectContent>
-                {Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')).map(hour => (
-                  <SelectItem key={hour} value={hour}>{parseInt(hour)}時</SelectItem>
+                {Array.from({ length: 24 }, (_, i) =>
+                  String(i).padStart(2, '0')
+                ).map((h) => (
+                  <SelectItem key={h} value={h}>
+                    {parseInt(h)}時
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            
-            <Select 
-              value={formData.birth_time?.split(':')[1] || ''}
-              onValueChange={(minute) => {
-                const [hour = '00'] = formData.birth_time?.split(':') || [];
-                setFormData({ ...formData, birth_time: `${hour}:${minute}` });
-              }}
+
+            <Select
+              value={minute}
+              onValueChange={(m) =>
+                setFormData({
+                  ...formData,
+                  birth_time: `${hour || '00'}:${m}`,
+                })
+              }
             >
-              <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white focus:border-violet-500 rounded-xl h-12 text-base">
+              <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white rounded-xl h-12">
                 <SelectValue placeholder="分" />
               </SelectTrigger>
               <SelectContent>
-                {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')).map(minute => (
-                  <SelectItem key={minute} value={minute}>{parseInt(minute)}分</SelectItem>
+                {Array.from({ length: 60 }, (_, i) =>
+                  String(i).padStart(2, '0')
+                ).map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {parseInt(m)}分
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
+
           <p className="text-white/40 text-sm">
             出生時刻があるとより正確な鑑定ができます
           </p>
         </div>
 
+        {/* 出生地 */}
         <div className="space-y-2">
           <Label className="text-white/70 flex items-center gap-2 text-base">
             <MapPin className="w-4 h-4" />
-            出生地（わかれば）
+            出生地
           </Label>
           <Input
-            type="text"
             placeholder="例：東京都"
             value={formData.birth_place}
-            onChange={(e) => setFormData({ ...formData, birth_place: e.target.value })}
-            className="bg-slate-900/50 border-slate-700 text-white text-base placeholder:text-white/30 focus:border-violet-500 rounded-xl h-12"
+            onChange={(e) =>
+              setFormData({ ...formData, birth_place: e.target.value })
+            }
+            className="bg-slate-900/50 border-slate-700 text-white rounded-xl h-12"
           />
         </div>
 
         <Button
           type="submit"
           disabled={!formData.birth_date || isLoading}
-          className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white rounded-full h-12 text-base"
+          className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-full h-12"
         >
           次へ進む
           <ArrowRight className="w-4 h-4 ml-2" />
