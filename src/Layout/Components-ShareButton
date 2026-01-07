@@ -1,34 +1,75 @@
-import React, { useState } from 'react';
+'use client';
+
+import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Share2, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function ShareButton({ fortune }) {
+/**
+ * fortune 型の前提:
+ * {
+ *   name: string
+ *   fortune_type: string
+ *   result: string
+ * }
+ */
+
+export default function ShareButton({ fortune }: { fortune: any }) {
   const [copied, setCopied] = useState(false);
 
-  const handleShare = async () => {
-    const shareText = `【100円占い】\n${fortune.name}さんの運勢: ${fortune.fortune_type}\n\n${fortune.result.substring(0, 100)}...\n\n#100円占い #占い #運勢`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          text: shareText,
-        });
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          handleCopy(shareText);
-        }
+  const handleCopy = useCallback(async (text: string) => {
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // 古いブラウザ向けフォールバック
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
       }
-    } else {
-      handleCopy(shareText);
-    }
-  };
 
-  const handleCopy = (text) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // コピー失敗時は何もしない（UX優先）
+    }
+  }, []);
+
+  const handleShare = useCallback(async () => {
+    if (!fortune) return;
+
+    const resultText =
+      typeof fortune.result === 'string'
+        ? fortune.result.slice(0, 100)
+        : '';
+
+    const shareText = `【100円占い】
+${fortune.name}さんの運勢: ${fortune.fortune_type}
+
+${resultText}${resultText.length === 100 ? '...' : ''}
+
+#100円占い #占い #運勢`;
+
+    // Web Share API（モバイル優先）
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ text: shareText });
+        return;
+      } catch (err: any) {
+        // ユーザーキャンセル以外はコピーへフォールバック
+        if (err?.name === 'AbortError') return;
+      }
+    }
+
+    // Clipboard API フォールバック
+    await handleCopy(shareText);
+  }, [fortune, handleCopy]);
 
   return (
     <motion.div
@@ -38,20 +79,22 @@ export default function ShareButton({ fortune }) {
     >
       <Button
         onClick={handleShare}
+        type="button"
         className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
       >
         {copied ? (
-          <>
-            <Check className="w-5 h-5 mr-2" />
+          <span className="flex items-center justify-center gap-2">
+            <Check className="w-5 h-5" />
             コピーしました！
-          </>
+          </span>
         ) : (
-          <>
-            <Share2 className="w-5 h-5 mr-2" />
+          <span className="flex items-center justify-center gap-2">
+            <Share2 className="w-5 h-5" />
             結果をシェアする
-          </>
+          </span>
         )}
       </Button>
+
       <p className="text-center text-white/40 text-sm mt-3">
         スクショしてSNSでシェアしよう！
       </p>
