@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -9,7 +11,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#1C1C1C] relative overflow-hidden">
       {/* 和紙テクスチャオーバーレイ */}
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+      <div
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
@@ -26,21 +29,39 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <div className="inline-block">
-              <h1 className="text-6xl md:text-7xl font-bold tracking-wide mb-2" style={{ fontFamily: "'Noto Serif JP', serif", color: '#F5F3F0' }}>
+              <h1
+                className="text-6xl md:text-7xl font-bold tracking-wide mb-2"
+                style={{
+                  fontFamily: "'Noto Serif JP', serif",
+                  color: '#F5F3F0',
+                }}
+              >
                 <ruby>
                   100円占い
-                  <rt style={{ fontSize: '0.4em', color: '#C2A56F', fontWeight: 'normal' }}>ひゃくえん うらない</rt>
+                  <rt
+                    style={{
+                      fontSize: '0.4em',
+                      color: '#C2A56F',
+                      fontWeight: 'normal',
+                    }}
+                  >
+                    ひゃくえん うらない
+                  </rt>
                 </ruby>
               </h1>
               <div className="h-1 w-32 mx-auto bg-gradient-to-r from-transparent via-[#C2A56F] to-transparent opacity-60" />
             </div>
-            
-            <h2 className="text-2xl md:text-3xl font-medium text-[#C2A56F] tracking-wider" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+
+            <h2
+              className="text-2xl md:text-3xl font-medium text-[#C2A56F] tracking-wider"
+              style={{ fontFamily: "'Noto Serif JP', serif" }}
+            >
               世界14統合占術　螺旋暦占
             </h2>
-            
+
             <p className="text-[#F5F3F0]/70 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
-              全世界14占術を統合した最新の占い、螺旋暦占で<br className="hidden md:block" />
+              全世界14占術を統合した最新の占い、螺旋暦占で
+              <br className="hidden md:block" />
               どんなお悩みでも改善に尽力します。
             </p>
 
@@ -61,11 +82,13 @@ export default function Home() {
                   <ArrowRight className="w-6 h-6 ml-3" />
                 </Button>
               </Link>
-              <p className="text-[#F5F3F0]/40 text-sm mt-4">初回100円で本格鑑定</p>
+              <p className="text-[#F5F3F0]/40 text-sm mt-4">
+                初回100円で本格鑑定
+              </p>
             </motion.div>
           </motion.div>
 
-          {/* 14占術グリッド（抽象的な表現） */}
+          {/* 14占術グリッド */}
           <motion.div
             className="mt-24"
             initial={{ opacity: 0, y: 30 }}
@@ -73,7 +96,10 @@ export default function Home() {
             transition={{ delay: 0.6, duration: 0.8 }}
           >
             <div className="text-center mb-12">
-              <h3 className="text-2xl md:text-3xl font-bold text-[#F5F3F0] mb-4" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+              <h3
+                className="text-2xl md:text-3xl font-bold text-[#F5F3F0] mb-4"
+                style={{ fontFamily: "'Noto Serif JP', serif" }}
+              >
                 14の占術が織りなす精密な未来予測
               </h3>
               <p className="text-[#F5F3F0]/60">
@@ -91,19 +117,31 @@ export default function Home() {
                 { icon: Zap, label: '生命の樹' },
                 { icon: Star, label: '天空の宿' },
                 { icon: Sparkles, label: '時の周期' },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  className="bg-[#0F4C81]/10 backdrop-blur-sm border border-[#0F4C81]/30 rounded-lg p-6 text-center hover:bg-[#0F4C81]/20 transition-all duration-300"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8 + i * 0.05 }}
-                  whileHover={{ scale: 1.05, borderColor: 'rgba(194, 165, 111, 0.5)' }}
-                >
-                  <item.icon className="w-8 h-8 text-[#C2A56F] mx-auto mb-3" strokeWidth={1.5} />
-                  <p className="text-[#F5F3F0]/80 text-sm font-medium">{item.label}</p>
-                </motion.div>
-              ))}
+              ].map((item, i) => {
+                const Icon = item.icon;
+
+                return (
+                  <motion.div
+                    key={i}
+                    className="bg-[#0F4C81]/10 backdrop-blur-sm border border-[#0F4C81]/30 rounded-lg p-6 text-center hover:bg-[#0F4C81]/20 transition-all duration-300"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8 + i * 0.05 }}
+                    whileHover={{
+                      scale: 1.05,
+                      borderColor: 'rgba(194, 165, 111, 0.5)',
+                    }}
+                  >
+                    <Icon
+                      className="w-8 h-8 text-[#C2A56F] mx-auto mb-3"
+                      strokeWidth={1.5}
+                    />
+                    <p className="text-[#F5F3F0]/80 text-sm font-medium">
+                      {item.label}
+                    </p>
+                  </motion.div>
+                );
+              })}
             </div>
 
             <div className="text-center mt-8">
@@ -137,9 +175,15 @@ export default function Home() {
               <motion.div
                 key={i}
                 className="text-center p-6 rounded-lg bg-gradient-to-b from-[#0F4C81]/5 to-transparent border border-[#0F4C81]/20"
-                whileHover={{ borderColor: 'rgba(194, 165, 111, 0.3)', scale: 1.02 }}
+                whileHover={{
+                  borderColor: 'rgba(194, 165, 111, 0.3)',
+                  scale: 1.02,
+                }}
               >
-                <h4 className="text-[#C2A56F] font-bold text-lg mb-3" style={{ fontFamily: "'Noto Serif JP', serif" }}>
+                <h4
+                  className="text-[#C2A56F] font-bold text-lg mb-3"
+                  style={{ fontFamily: "'Noto Serif JP', serif" }}
+                >
                   {feature.title}
                 </h4>
                 <p className="text-[#F5F3F0]/60 text-sm leading-relaxed">
