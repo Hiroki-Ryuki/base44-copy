@@ -1,47 +1,53 @@
 {
-  "name": "Fortune",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Fortune",
+  "description": "Fortune telling result",
   "type": "object",
+  "additionalProperties": false,
   "properties": {
     "name": {
       "type": "string",
-      "description": "\u5360\u3044\u3092\u53d7\u3051\u308b\u4eba\u306e\u540d\u524d"
+      "minLength": 1,
+      "description": "占いを受ける人の名前"
     },
     "birthdate": {
       "type": "string",
       "format": "date",
-      "description": "\u751f\u5e74\u6708\u65e5"
+      "description": "生年月日 (YYYY-MM-DD)"
     },
     "question": {
       "type": "string",
-      "description": "\u5360\u3044\u306e\u8cea\u554f\u5185\u5bb9"
+      "minLength": 1,
+      "description": "占いの質問内容"
     },
     "result": {
       "type": "string",
-      "description": "\u5360\u3044\u7d50\u679c"
+      "minLength": 1,
+      "description": "占い結果"
     },
     "fortune_type": {
       "type": "string",
       "enum": [
-        "\u5927\u5409",
-        "\u5409",
-        "\u4e2d\u5409",
-        "\u5c0f\u5409",
-        "\u672b\u5409",
-        "\u51f6"
+        "大吉",
+        "吉",
+        "中吉",
+        "小吉",
+        "末吉",
+        "凶"
       ],
-      "description": "\u904b\u52e2\u306e\u30bf\u30a4\u30d7"
+      "description": "運勢のタイプ"
     },
     "lucky_item": {
       "type": "string",
-      "description": "\u30e9\u30c3\u30ad\u30fc\u30a2\u30a4\u30c6\u30e0"
+      "description": "ラッキーアイテム"
     },
     "lucky_color": {
       "type": "string",
-      "description": "\u30e9\u30c3\u30ad\u30fc\u30ab\u30e9\u30fc"
+      "description": "ラッキーカラー"
     },
     "advice": {
       "type": "string",
-      "description": "\u30a2\u30c9\u30d0\u30a4\u30b9"
+      "description": "アドバイス"
     }
   },
   "required": [
