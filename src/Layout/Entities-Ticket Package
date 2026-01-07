@@ -1,30 +1,39 @@
 {
-  "name": "TicketPackage",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TicketPackage",
+  "description": "Ticket package definition",
   "type": "object",
+  "additionalProperties": false,
   "properties": {
     "name": {
       "type": "string",
+      "minLength": 1,
       "description": "Package name"
     },
     "ticket_count": {
-      "type": "number",
+      "type": "integer",
+      "minimum": 1,
       "description": "Number of tickets in package"
     },
     "price": {
-      "type": "number",
+      "type": "integer",
+      "minimum": 0,
       "description": "Price in yen"
     },
     "original_price": {
-      "type": "number",
+      "type": "integer",
+      "minimum": 0,
       "description": "Original price before discount"
     },
     "is_popular": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "description": "Whether this package is marked as popular"
     },
     "active": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "description": "Whether this package is currently active"
     }
   },
   "required": [
