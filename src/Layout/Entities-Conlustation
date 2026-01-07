@@ -1,6 +1,9 @@
 {
-  "name": "Consultation",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Consultation",
+  "description": "User consultation record",
   "type": "object",
+  "additionalProperties": false,
   "properties": {
     "user_id": {
       "type": "string",
@@ -20,6 +23,7 @@
     },
     "concern": {
       "type": "string",
+      "minLength": 1,
       "description": "User's specific concern or question"
     },
     "status": {
@@ -28,10 +32,13 @@
         "active",
         "completed"
       ],
-      "default": "active"
+      "default": "active",
+      "description": "Current consultation status"
     },
     "follow_up_count": {
-      "type": "number",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2,
       "default": 0,
       "description": "Number of follow-up questions used (max 2)"
     },
